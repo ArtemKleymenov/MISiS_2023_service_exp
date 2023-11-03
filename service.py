@@ -21,23 +21,23 @@ class Service(ABC):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connected_clients = []
 
-    def __recvall(self, sock, n):
+    def __recvall(self, sock: socket, n: int) -> bytearray:
         data = bytearray()
         while len(data) < n:
             packet = sock.recv(n - len(data))
             if not packet:
-                return None
+                break
             data.extend(packet)
         return data
 
-    def __recv_msg(self, sock):
+    def __recv_msg(self, sock: socket) -> bytearray:
         raw_msglen = self.__recvall(sock, 4)
         if not raw_msglen:
-            return None
+            return bytearray()
         msglen = struct.unpack('>I', raw_msglen)[0]
         return self.__recvall(sock, msglen)
 
-    def __send_msg(self, sock, msg):
+    def __send_msg(self, sock: socket, msg: bytes) -> None:
         msg = struct.pack('>I', len(msg)) + msg
         sock.sendall(msg)
 
