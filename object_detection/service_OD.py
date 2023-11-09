@@ -2,7 +2,7 @@
 from service import Service
 
 # Ниже импорты специфичные для задачи
-from deepface import DeepFace
+from yolov5 import detect
 import cv2
 
 # Импорт класса для работы с камерой
@@ -11,15 +11,16 @@ from cam import Camera
 
 # Определения сервиса для детекции лиц
 # Пример как определить свой сервис
-class ServiceDF(Service):
+class ServiceOD(Service):
 
     # Функция, которую НЕОБХОДИМО переопределить
     def _do_job(self):
         try:
             # Подключение к RTSP потоку камеры
-            url = 'rtsp://0.0.0.0:8554/mystream'  # rtsp-стрим
+            #url = 'rtsp://0.0.0.0:8554/mystream'  # rtsp-стрим
             url = 0  # webcam
-            cap = Camera(url)        
+            cap = Camera(url)
+            self.url = url        
 
             # Инициализация переменных
             self.__init_vars()
@@ -86,55 +87,10 @@ class ServiceDF(Service):
 
     # Вспомогательная функция
     def __specific_work(self):
-        print('load deepface...')
-        SAME_PERSON = False
-        # Our operations on the frame come here
-        lst = DeepFace.extract_faces(self.frame, enforce_detection=False, 
-                                     detector_backend='mediapipe', align=False, target_size=[256, 256])
-
-        if self._target is None or cv2.waitKey(5) & 0xFF == ord('e'):
-            print('Target')
-            if lst[0] is not None:
-                self._target_image = lst[0]['face']
-                self._target = DeepFace.represent(lst[0]['face'].copy(), detector_backend='skip', model_name='ArcFace')
-
-        color = (0, 0, 255)
-        THRESH = 0.66
-        for i, dict_ in enumerate(lst):
-            if dict_['confidence'] < 0.01:
-                break
-            side_b = DeepFace.represent(dict_['face'], detector_backend='skip', model_name='ArcFace')
-            self._face_rect = dict_['facial_area']
-
-            cosine_similarity_score = DeepFace.dst.findCosineDistance(self._target[0]["embedding"], side_b[0]["embedding"])
-            print("Cosine Similarity:", cosine_similarity_score)
-
-            if cosine_similarity_score < THRESH:
-                self._in_target_frames += 1
-                color = (0, 255, 0)
-                SAME_PERSON = True
-
-            cv2.imshow(f'Detected_{i}', dict_['face'])
-            break
-        
-        if self._target_image is not None:
-            cv2.imshow('Target', self._target_image)
-        if self._face_rect is not None:
-            cv2.rectangle(self.frame, (self._face_rect['x'], self._face_rect['y']),
-                          (self._face_rect['x']+self._face_rect['w'], self._face_rect['y']+self._face_rect['h']), 
-                          color, thickness=2)
-        cv2.imshow('Frame', self.frame)
-
-        self._total_frames += 1
-        print(f'Frames (in/total): {self._in_target_frames}/{self._total_frames}')
-
-        return SAME_PERSON
-
-    def __resp_hand(self, response):
-        if response == "goodbye":
-            self._target= None
-        if response == 'hello':
-            self._in_target_frames = 0
+        print('load YOLO...')
+        detect.run (
+            source = self.url
+        )
 
     # Функция, которую НЕОБХОДИМО переопределить
     # Обработчик запросов - функция. На вход - строка, на выход (возвращает) - строка
