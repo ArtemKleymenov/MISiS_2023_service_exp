@@ -1,11 +1,11 @@
-from service_df import ServiceDF
+from service_OD import ServiceOD
 
 
 if __name__ == '__main__' :
     # Для запуска сервиса используем
     # IP-адрес - строковый литерал
     # Порт - int value
-    service_var = ServiceDF(ip_="10.10.10.179", port_=5505)
+    service_var = ServiceOD(ip_="127.0.0.2", port_=5505)
     # Запуск сервиса
     # Сервис состоит из основной работы 
     # (для чего сервис создан? Построение карты, поиск предметов, классификация жестов, распознавание речи)
