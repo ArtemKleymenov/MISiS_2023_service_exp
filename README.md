@@ -12,10 +12,16 @@ Fall 2023 MISiS. Robot prj. Service example for participants
 
 Если при запуске скрипта/сервиса, возникает ошибка
 > ModuleNotFoundError: No module named 'service'
-
-
+~~
 то следует вызвать команду (рекомендуется использовать виртуальное окружение)
 > pip install -e .
+~~
+
+Добавить перед импортом сервиса (`from service import Service`) следующие строки:
+> import sys
+> import os
+> dir_path = os.path.dirname(os.path.realpath(__file__))    # Для запуска сервиса используем
+> sys.path.append(f"{dir_path}/..")
 
 
 ## Дополнение
