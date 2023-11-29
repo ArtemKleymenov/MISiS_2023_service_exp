@@ -4,17 +4,14 @@ from service import Service
 # Ниже импорты специфичные для задачи
 import cv2
 
+# Need pip install
 import yolov5
 
 # Импорт класса для работы с камерой
 from cam import Camera
 
-
-# Определения сервиса для детекции лиц
-# Пример как определить свой сервис
 class ServiceOD(Service):
 
-	# Функция, которую НЕОБХОДИМО переопределить
 	def _do_job(self):
 		try:
 			# Подключение к RTSP потоку камеры
