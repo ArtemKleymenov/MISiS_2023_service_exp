@@ -28,13 +28,10 @@ class ServiceOD(Service):
 			# 2) Обработка звука
 			# 3) Обработка сигналов (с лидаров/сонаров)
 			while True:
-				# ДАННЫЙ БЛОК НЕОБХОДИМО ВКЛЮЧИТЬ В СВОЙ БЕСКОНЕЧНЫЙ ЦИКЛ
-				# Начало
 				if self.need_job_break:
 					return
 				if not self.need_job_pause:
 					continue
-				# Конец
 
 				# Получение кадров из потока
 				frame_raw = cap.getFrame()
@@ -128,7 +125,7 @@ class ServiceOD(Service):
 		# 4) restart (перезапускаем сервис)
 
 		# ЧТО НУЖНО РЕАЛИЗОВАТЬ
-		# request `__is_alive_here`, который просто будет возвращать есть ли кто-то живой в кадре
+		# request `__is_alive_here`, который просто будет возвращать есть ли кто-то живой в кадре???????????
 		if request == 'is_alive_here':
 			output = self._do_job()
 		
