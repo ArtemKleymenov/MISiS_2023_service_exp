@@ -48,30 +48,31 @@ class ServiceOD(Service):
 
 
 	# Вспомогательная функция
-	def __init_vars(self):			
-		self.model = yolov5.load('yolov5s.pt')
-		# set model parameters
-		self.model.conf = 0.25  # NMS confidence threshold
-		self.model.iou = 0.45  # NMS IoU threshold
-		self.model.agnostic = False  # NMS class-agnostic
-		self.model.multi_label = False  # NMS multiple labels per box
-		self.model.max_det = 1000  # maximum number of detections per image
+	def __init_vars(self):		
+		if not hasattr(self, 'model'):
+			self.model = yolov5.load('yolov5s.pt')
+			# set model parameters
+			self.model.conf = 0.25  # NMS confidence threshold
+			self.model.iou = 0.45  # NMS IoU threshold
+			self.model.agnostic = False  # NMS class-agnostic
+			self.model.multi_label = False  # NMS multiple labels per box
+			self.model.max_det = 1000  # maximum number of detections per image
 
-		alive_set = ['person',
-					'bird',
-					'cat',
-					'dog',
-					'horse',
-					'sheep',
-					'cow',
-					'elephant',
-					'bear',
-					'zebra',
-					'giraffe',
-					]
-		for i in range(len(self.model.names)):
-			if self.model.names[i] in alive_set:
-				self.model.names[i] = 'alive'
+			alive_set = ['person',
+						'bird',
+						'cat',
+						'dog',
+						'horse',
+						'sheep',
+						'cow',
+						'elephant',
+						'bear',
+						'zebra',
+						'giraffe'
+						]
+			for i in range(len(self.model.names)):
+				if self.model.names[i] in alive_set:
+					self.model.names[i] = 'alive'
 
 	def __resp_hand(self, response):
 		pass
