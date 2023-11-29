@@ -50,7 +50,7 @@ class ServiceOD(Service):
 				# Depth фрейм cghfdf, т.е. его координаты (x=640, y=0, w=640, h=480)
 				h, w, ch = frame_raw.shape
 				w = w//2
-				self.frame = frame_raw[0:h, 0:w]  # получение RGB
+				self.frame = frame_raw[:, :]  # получение RGB
 				# frame = frame_raw[0:h, w:2*w]  # получение Depth
 
 				# Обработка кадра (или иная работа сервиса)
@@ -120,10 +120,8 @@ class ServiceOD(Service):
 	def __specific_work(self):
 		print('load YOLO...')
 		results = self.model(self.frame)
-		results.show()
+		return ('alive' in str(results.tolist()[0]))
 
-	# Функция, которую НЕОБХОДИМО переопределить
-	# Обработчик запросов - функция. На вход - строка, на выход (возвращает) - строка
 	def _request_handler(self, request):
 		# Завести набор команд, которые может обрабатывать сервер
 		# Предварительно обозначены следующие команды, которые есть у КАЖДОГО сервиса
@@ -132,7 +130,14 @@ class ServiceOD(Service):
 		# 3) close (закрываем сервис)
 		# 4) restart (перезапускаем сервис)
 
+		# ЧТО НУЖНО РЕАЛИЗОВАТЬ
+		# request `__is_alive_here`, который просто будет возвращать есть ли кто-то живой в кадре
+		if request == 'is_alive_here':
+			output = self._do_job()
+		
 		# остальной набор команд специфичен для каждого сервиса
 		# данная функция ВСЕГДА должна что-то возвращать либо результат, либо статус (OK, FAILED, etc)
 		some_string = "0"
 		return some_string
+
+
